@@ -1,0 +1,49 @@
+{% macro campo1(name,placeholder,type='text')%}
+<div>
+    <label for="{{name}}" class="form-label">N1</label>
+    <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
+</div>
+{% endmacro %}
+
+{% macro campo2(name,placeholder,type='text')%}
+<div>
+    <label for="{{name}}" class="form-label">N2</label>
+    <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
+</div>
+{% endmacro %}
+
+{% macro campo3(name,placeholder,type='text')%}
+<div>
+    <label for="{{name}}" class="form-label">N3</label>
+    <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
+</div>
+{% endmacro %}
+
+{% macro campo4(name,placeholder,type='text')%}
+<div>
+    <label for="{{name}}" class="form-label">N4</label>
+    <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
+</div>
+{% endmacro %}
+
+{% macro campoFiguras(name,label,placeholder,type='number',value='') %}
+<div class="mb-3">
+    <label for="{{name}}" class="form-label">{{label}}</label>
+    <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}" value="{{value}}">
+</div>
+{% endmacro %}
+
+{% macro campoNuevo(field) %}
+
+    <td>{{field.label}}</td>
+    <dd>{{field(**kwargs)|safe }}
+        {% if field.errors %}
+        <ul class=errors>
+        {% for error in field.errors %}
+        <li style="color: blueviolet;">{{ error }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </dd>
+
+{% endmacro %}

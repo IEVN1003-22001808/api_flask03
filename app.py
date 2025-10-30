@@ -1,10 +1,63 @@
 from flask import Flask, render_template, request
+import forms
+import math
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
     return "Hello Papu"
+
+@app.route('/Alumnos', methods=['GET', 'POST'])
+def alumnos():
+    mat = 0
+    nom = ""
+    ape = ""
+    ema = ""
+    alumnos_clase = forms.UserForm(request.form)
+
+    if request.method == 'POST' and alumnos_clase.validate():
+        mat = alumnos_clase.matricula.data
+        nom = alumnos_clase.nombre.data
+        ape = alumnos_clase.apellidos.data
+        ema = alumnos_clase.email.data
+    return render_template ('alumnos.html', form = alumnos_clase, mat=mat, nom=nom, ape=ape, ema=ema)
+
+@app.route('/figuras', methods = ['GET', 'POST'])
+def figuras():
+    area = None
+    figura = None
+    form = forms.FigurasForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        figuraSel = form.figuraSel.data
+        
+        try:
+            dato1 = float(form.dato1.data)
+            dato2 = float(form.dato2.data)
+            if figuraSel == 'triangulo':
+                area = 0.5 * dato1 * dato2
+                figura = 'Triángulo'
+            elif figuraSel == 'rectangulo':
+                area = dato1 * dato2
+                figura = 'Rectángulo'
+            elif figuraSel == 'circulo':
+                area = math.pi * (dato1 ** 2)
+                figura = 'Círculo'
+            elif figuraSel == 'pentagono':
+                lado = dato1
+                apotema = lado / (2 * math.tan(math.radians(36)))
+                perimetro = 5 * lado
+                area = (perimetro * apotema) / 2
+                figura = 'Pentágono'
+
+        except ValueError:
+            pass 
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+
+    return render_template('figuras.html', area=area, figura=figura, form=form)
 
 @app.route("/index")
 def index():

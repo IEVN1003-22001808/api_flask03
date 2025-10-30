@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro%}
+
+<form action="" method="post" class="form-control" novalidate>
+    <h1>Formulario de PAPUTS</h1>
+    {{ macro.campoNuevo(form.matricula)}}
+    {{ macro.campoNuevo(form.nombre)}}
+    {{ macro.campoNuevo(form.apellidos)}}
+    {{ macro.campoNuevo(form.email)}}
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+<h2>Matricula: {{mat}}</h2>
+<h2>Nombre: {{nom}}</h2>
+<h2>Apellidos: {{ape}}</h2>
+<h2>Email: {{ema}}</h2>
+
+{% endblock %}

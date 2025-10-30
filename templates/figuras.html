@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro %}
+
+<div class="container">
+    <h1 class="mb-4">Figuras Cálculo</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form action="" method="post" novalidate>
+                
+                <div class="mb-3">
+                    <strong>{{ form.figuraSel.label }}</strong>
+                    
+                    {% for subfield in form.figuraSel %}
+                    <div class="form-check">
+                        {{ subfield(class="form-check-input") }}
+                        {{ subfield.label(class="form-check-label") }}
+                    </div>
+                    {% endfor %}
+                    
+                    {% if form.figuraSel.errors %}
+                        <div class="text-danger small">
+                        {% for error in form.figuraSel.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr>
+                <p><strong>Ingrese las dimensiones:</strong></p>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ form.dato1.label }}</label>
+                    {{ form.dato1(class="form-control", placeholder="Base/Longitud/Radio/Lado") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ form.dato2.label }}</label>
+                    {{ form.dato2(class="form-control", placeholder="Altura/Anchura (si aplica)") }}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Calcular</button>
+            </form>
+        </div>
+    </div>
+
+    {% if area is not none %}
+    <div class="alert alert-success mt-4">
+        <h3>El área del {{ figura }} es: {{ "%.4f" | format(area) }}</h3>
+        <p>(Cálculo realizado según las especificaciones de la tarea).</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

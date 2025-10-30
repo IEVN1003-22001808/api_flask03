@@ -1,7 +1,14 @@
 {% extends "layout.html" %}
 
 {% block content %}
+{% import "_macros.html" as macro %}
 
     <h1>Distancia</h1>
+    <form class="form-control" action="" method="post">
+        {{macro.campo1('x1','Ingrese X1',"number")}}
+        {{macro.campo2('x2','Ingrese X2',"email")}}
+        {{macro.campo3('x3','Ingrese X3',"password")}}
+        {{macro.campo4('x4','Ingrese X4')}}
+    </form>
 
 {% endblock %}
