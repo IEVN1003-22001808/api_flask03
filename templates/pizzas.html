@@ -1,0 +1,243 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro %}
+ 
+<style>
+ 
+  body {background-color: #dce6f1;}
+ 
+  .ventana {
+    background-color: #a7bddb;
+    border: 1px solid #6b7a8f;
+    padding: 20px;
+    width: 90%;
+    margin: 20px auto;
+  }
+ 
+  .grupo {
+    border: 1px solid #6b7a8f;
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+ 
+  label {font-weight: bold;}
+ 
+  .input-text {
+    width: 200px;
+    padding: 4px;
+    margin-left: 5px;
+  }
+ 
+  .radio, .check {margin-left: 15px;}
+ 
+  .boton {
+    background-color: #d9d9d9;
+    border: 1px solid #888;
+    padding: 5px 15px;
+    cursor: pointer;
+  }
+ 
+  .tabla {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+ 
+  .tabla th, .tabla td {
+    border: 1px solid #444;
+    text-align: center;
+    padding: 6px;
+  }
+ 
+  .panel-ventas {
+    background-color: #bfc8d9;
+    border: 2px dotted #444;
+    padding: 15px;
+  }
+ 
+  .panel-ventas .inner {
+    background-color: #d5d9e0;
+    border: 1px solid #777;
+    padding: 10px;
+    margin-top: 10px;
+  }
+ 
+  .alineado {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+ 
+  .columna {
+    flex: 1;
+    min-width: 250px;
+    margin: 10px;
+  }
+ 
+  .centrado {text-align: center;}
+ 
+  .btn-verde {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    margin-top: 10px;
+  }
+ 
+  .btn-azul {
+    background-color: #0275d8;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    margin-top: 10px;
+  }
+ 
+  .btn-rojo {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+  }
+ 
+  h4 {
+    margin-top: 0;
+    text-align: center;
+  }
+ 
+</style>
+ 
+<div class="ventana">
+  <form action="" method="post">
+    {{ form.csrf_token }}
+    <div class="alineado">
+ 
+      <div class="columna">
+        <label>Nombre:</label>
+        {{ form.nombre(class="input-text") }}<br><br>
+ 
+        <div class="grupo">
+          <label>Tamaño Pizza</label><br>
+          {% for subfield in form.tamanio %}
+            <div class="radio">
+              {{ subfield(class="form-check-input") }}
+              {{ subfield.label(class="form-check-label") }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+ 
+      <div class="columna">
+        <label>Dirección:</label>
+        {{ form.direccion(class="input-text") }}<br><br>
+ 
+        <div class="grupo">
+            <label>Ingredientes</label><br>
+ 
+            <div class="check">
+                {{ form.jamon(class="form-check-input") }}
+                {{ form.jamon.label(class="form-check-label") }}
+            </div>
+ 
+            <div class="check">
+                {{ form.pinia(class="form-check-input") }}
+                {{ form.pinia.label(class="form-check-label") }}
+            </div>
+ 
+            <div class="check">
+                {{ form.champiniones(class="form-check-input") }}
+                {{ form.champiniones.label(class="form-check-label") }}
+            </div>
+        </div>
+      </div>
+ 
+      <div class="columna">
+        <label>Teléfono:</label>
+        {{ form.telefono(class="input-text") }}<br><br>
+ 
+        <label>Num. de Pizzas:</label>
+        {{ form.num_pizzas(class="input-text") }}<br><br>
+ 
+        <button type="submit" name="accion" value="agregar" class="btn-verde">Agregar</button>
+      </div>
+ 
+    </div>
+  </form>
+ 
+  <hr>
+ 
+  <div class="alineado">
+    <div class="columna" style="flex:2;">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Tamaño</th>
+            <th>Ingredientes</th>
+            <th>Num. Pizzas</th>
+            <th>SubTotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pizza in pedido_actual %}
+            <tr>
+              <td>{{ pizza.tamanio }}</td>
+              <td>{{ pizza.ingredientes | join(', ') }}</td>
+              <td>{{ pizza.num_pizzas }}</td>
+              <td>${{ "%.2f"|format(pizza.subtotal) }}</td>
+              <td>
+                <form action="" method="post">
+                  <input type="hidden" name="indice_pizza" value="{{ loop.index0 }}">
+                  <button type="submit" name="accion" value="quitar" class="btn-rojo">Quitar</button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">Aún no hay pizzas en el pedido</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+ 
+      <div class="centrado">
+        <form action="" method="post">
+          <button type="submit" name="accion" value="terminar" class="btn-azul">Terminar</button>
+        </form>
+      </div>
+    </div>
+ 
+    <div class="columna" style="flex:1;">
+      <div class="panel-ventas">
+        <h4>Ventas del día</h4>
+       
+        {% if mostrar_Ventas %}
+        <div class="inner">
+          {% set total_dia = namespace(valor=0) %}
+          {% for nombre_cliente, total_pagado in ventas_dia.items() %}
+            <p><strong>{{ nombre_cliente }}</strong> total ${{ "%.2f"|format(total_pagado) }}</p>
+            {% set total_dia.valor = total_dia.valor + total_pagado %}
+          {% else %}
+            <p>No hay ventas registradas hoy.</p>
+          {% endfor %}
+          <hr>
+          <p><strong>Ventas totales del día:</strong> ${{ "%.2f"|format(total_dia.valor) }}</p>
+        </div>
+        {% endif %}
+ 
+        <div class="centrado">
+          <form action="" method="post" style="display: inline-block;">
+            <button type="submit" name="accion" value="mostrar_ventas" class="boton">Ventas totales por día</button>
+          </form>
+         
+          <form action="" method="post" style="display: inline-block;">
+            <button type="submit" name="accion" value="adios_popo" class="btn-rojo" style="margin-left: 10px;">Limpiar Ventas y Pedido</button>
+          </form>
+        </div>
+       
+        </div>
+    </div>
+ 
+  </div>
+ 
+</div>
+ 
+{% endblock %}

@@ -4,37 +4,50 @@
     <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
 </div>
 {% endmacro %}
-
+ 
 {% macro campo2(name,placeholder,type='text')%}
 <div>
     <label for="{{name}}" class="form-label">N2</label>
     <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
 </div>
 {% endmacro %}
-
+ 
 {% macro campo3(name,placeholder,type='text')%}
 <div>
     <label for="{{name}}" class="form-label">N3</label>
     <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
 </div>
 {% endmacro %}
-
+ 
 {% macro campo4(name,placeholder,type='text')%}
 <div>
     <label for="{{name}}" class="form-label">N4</label>
     <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}">
 </div>
 {% endmacro %}
-
+ 
 {% macro campoFiguras(name,label,placeholder,type='number',value='') %}
 <div class="mb-3">
     <label for="{{name}}" class="form-label">{{label}}</label>
     <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{placeholder}}" value="{{value}}">
 </div>
 {% endmacro %}
-
+ 
+{% macro campoFormulario(field) %}
+<div class="mb-3">
+    {{ field.label(class="form-label") }}
+    {{ field(class="form-control", **kwargs) | safe }}
+    {% if field.errors %}
+        <div class="text-danger small">
+        {% for error in field.errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}
+ 
 {% macro campoNuevo(field) %}
-
     <td>{{field.label}}</td>
     <dd>{{field(**kwargs)|safe }}
         {% if field.errors %}
@@ -45,5 +58,48 @@
         </ul>
         {% endif %}
     </dd>
-
+{% endmacro %}
+ 
+{% macro campoPizzas(form) %}
+ 
+  <form action="" method="post" novalidate>
+       
+    {{ campoFormulario(form.nombre) }}
+    {{ campoFormulario(form.direccion) }}
+    {{ campoFormulario(form.telefono, type="number") }}
+ 
+    <hr>
+ 
+    <div class="mb-3">
+      <strong>{{ form.tamanio.label }}</strong>
+      {% for subfield in form.tamanio %}
+        <div class="form-check">
+          {{ subfield(class="form-check-input") }}
+          {{ subfield.label(class="form-check-label") }}
+        </div>
+      {% endfor %}
+    </div>
+   
+    <div class="mb-3">
+      <strong>Ingredientes:</strong>
+      <div class="form-check">
+        {{ form.jamon(class="form-check-input") }}
+        {{ form.jamon.label(class="form-check-label") }}
+      </div>
+      <div class="form-check">
+        {{ form.pinia(class="form-check-input") }}
+        {{ form.pinia.label(class="form-check-label") }}
+      </div>
+      <div class="form-check">
+        {{ form.champiniones(class="form-check-input") }}
+        {{ form.champiniones.label(class="form-check-label") }}
+      </div>
+    </div>
+   
+    {{ campoFormulario(form.num_pizzas, type="number") }}
+ 
+    <button type="submit" name="accion" value="agregar" class="btn btn-success">Agregar Pizza</button>
+ 
+  </form>
+ 
 {% endmacro %}
