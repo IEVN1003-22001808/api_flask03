@@ -3,14 +3,16 @@ from flask import make_response, jsonify
 import json
 import forms
 import math
+from flask_cors import CORS
  
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
  
 @app.route('/')
 def home():
     return "Hello Papu"
  
-@app.route('/Alumnos', methods=['GET', 'POST'])
+@app.route('/alumnos', methods=['GET', 'POST'])
 def alumnos():
     mat = 0
     nom = ""
